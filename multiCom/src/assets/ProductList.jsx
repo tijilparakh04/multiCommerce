@@ -22,7 +22,7 @@ const ProductList = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search for a product"
       />
-      <button onClick={handleSearch}>Search</button>
+      <button class="button-64" onClick={handleSearch}>Search</button>
       <ul>
         {products.map((product, index) => (
           <li key={index}>
