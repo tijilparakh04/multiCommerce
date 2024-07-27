@@ -38,7 +38,7 @@ const ProductList = () => {
             <a href={product.link} target="_blank" rel="noopener noreferrer">
               <img src={product.image} alt={product.title} />
               <p>{product.title}</p>
-              <p>${product.price}</p>
+              <p>₹{product.price}</p>
             </a>
           </div>
         ))}
