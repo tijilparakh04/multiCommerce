@@ -7,11 +7,13 @@ const scrapeAmazon = async (searchTerm) => {
 
   const products = await page.evaluate(() => {
     const items = Array.from(document.querySelectorAll('.s-main-slot .s-result-item'));
-    return items.map(item => ({
-      title: item.querySelector('h2 .a-link-normal')?.innerText,
-      price: item.querySelector('.a-price-whole')?.innerText,
-      link: item.querySelector('h2 .a-link-normal')?.href
-    })).filter(item => item.title && item.price && item.link);
+    return items.map(item => {
+      const title = item.querySelector('h2 .a-link-normal')?.innerText;
+      const price = item.querySelector('.a-price-whole')?.innerText;
+      const link = item.querySelector('h2 .a-link-normal')?.href;
+      const image = item.querySelector('.s-image')?.src;
+      return { title, price, link, image };
+    }).filter(item => item.title && item.price && item.link && item.image);
   });
 
   await browser.close();
