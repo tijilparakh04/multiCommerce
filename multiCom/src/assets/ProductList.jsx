@@ -12,7 +12,7 @@ const ProductList = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get(`http://localhost:3000/scrape?search=${searchTerm}`);
+      const response = await axios.get(`http://localhost:3000/api/products?searchTerm=${searchTerm}`);
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -20,6 +20,13 @@ const ProductList = () => {
     }
     setLoading(false);
   };
+
+  const groupedProducts = products.reduce((acc, product) => {
+    const title = product.title.toLowerCase();
+    if (!acc[title]) acc[title] = [];
+    acc[title].push(product);
+    return acc;
+  }, {});
 
   return (
     <div>
@@ -33,13 +40,19 @@ const ProductList = () => {
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
       <div className="product-list">
-        {products.map((product, index) => (
+        {Object.keys(groupedProducts).map((title, index) => (
           <div className="product-item" key={index}>
-            <a href={product.link} target="_blank" rel="noopener noreferrer">
-              <img src={product.image} alt={product.title} />
-              <p>{product.title}</p>
-              <p>${product.price}</p>
-            </a>
+            <h3>{title}</h3>
+            <div className="product-details">
+              {groupedProducts[title].map((product, i) => (
+                <div key={i} className="product">
+                  <a href={product.link} target="_blank" rel="noopener noreferrer">
+                    <img src={product.image} alt={product.title} />
+                    <p>{product.platform}: ₹{product.price}</p>
+                  </a>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>

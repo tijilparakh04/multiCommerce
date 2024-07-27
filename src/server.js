@@ -1,26 +1,23 @@
 const express = require('express');
 const cors = require('cors');
-const { scrapeAmazon } = require('./scraper');
+const { scrapeProducts } = require('./scraper');
 
 const app = express();
-const PORT = 3000;
+const port = 3000;
 
-app.use(cors());
-app.use(express.json());
+app.use(cors()); // Allow CORS for the frontend
 
-app.get('/scrape', async (req, res) => {
-  const searchTerm = req.query.search;
-  if (!searchTerm) {
-    return res.status(400).send('Search term is required');
-  }
+app.get('/api/products', async (req, res) => {
+  const searchTerm = req.query.searchTerm;
   try {
-    const data = await scrapeAmazon(searchTerm);
-    res.json(data);
+    const products = await scrapeProducts(searchTerm);
+    res.json(products);
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error('Error scraping products:', error);
+    res.status(500).json({ error: 'Failed to fetch products. Please try again.' });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
