@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './ProductList.css';
 
 const ProductList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSearch = async () => {
+    setLoading(true);
+    setError('');
     try {
       const response = await axios.get(`http://localhost:3000/scrape?search=${searchTerm}`);
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setError('Failed to fetch products. Please try again.');
     }
+    setLoading(false);
   };
 
   return (
@@ -26,16 +33,16 @@ const ProductList = () => {
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
       <div className="product-list">
-      <button class="button-64" onClick={handleSearch}>Search</button>
-      <ul>
         {products.map((product, index) => (
-          <li key={index}>
+          <div className="product-item" key={index}>
             <a href={product.link} target="_blank" rel="noopener noreferrer">
-              {product.title} - ${product.price}
+              <img src={product.image} alt={product.title} />
+              <p>{product.title}</p>
+              <p>₹{product.price}</p>
             </a>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
