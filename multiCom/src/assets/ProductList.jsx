@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './ProductList.css';
 
 const ProductList = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -31,16 +32,17 @@ const ProductList = () => {
       <button onClick={handleSearch}>Search</button>
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
-      <ul>
+      <div className="product-list">
         {products.map((product, index) => (
-          <li key={index}>
+          <div className="product-item" key={index}>
             <a href={product.link} target="_blank" rel="noopener noreferrer">
-              <img src={product.image} alt={product.title} style={{ width: '100px', height: '100px' }} />
-              <p>{product.title} - ${product.price}</p>
+              <img src={product.image} alt={product.title} />
+              <p>{product.title}</p>
+              <p>${product.price}</p>
             </a>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
