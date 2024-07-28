@@ -6,9 +6,10 @@ import ProductList from './assets/ProductList.jsx';
 
 function App() {
   return (
+    
     <div className="App">
       <header className="App-header">
-        <h1>Amazon Product Scraper</h1>
+        <h1 class="bargainbot">BarGain Bot</h1>
       </header>
       <ProductList />
     </div>

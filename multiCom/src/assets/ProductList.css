@@ -1,5 +1,6 @@
 .product-list {
     display: flex;
+    margin-top: 1em;
     flex-wrap: wrap;
     gap: 16px;
     justify-content: center;
@@ -26,5 +27,31 @@
   
   .product-item p {
     margin: 8px 0;
+    overflow: hidden;
   }
-  
+
+  .product-items{
+    width: 98%;
+  }
+  .titles{
+    font-size: 15px;
+  }
+  .searchbutton{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    
+  }
+
+  .inputsearch{
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    margin-bottom: 1em;
+    border: 1px solid #ddd;
+    font-size: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
