@@ -60,19 +60,21 @@ const scrapeCroma = async (searchTerm) => {
   try {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
-    await page.goto(`https://www.croma.com/search/?text=${searchTerm}`, { waitUntil: 'networkidle2' });
+    await page.goto(`https://www.croma.com/searchB?q=${searchTerm}`, { waitUntil: 'networkidle2' });
 
     const products = await page.evaluate(() => {
-      const items = Array.from(document.querySelectorAll('.product-listing .product-item'));
+      const items = Array.from(document.querySelectorAll('li.product-item'));
+
       return items.map(item => {
-        const titleElement = item.querySelector('.product-title a');
+        const titleElement = item.querySelector('h3.product-title.plp-prod-title a');
         const title = titleElement?.innerText.trim();
-        const priceElement = item.querySelector('.pdp-price');
-        const price = priceElement?.innerText.replace('₹', '').replace(',', '').trim();
-        const linkElement = item.querySelector('.product-title a');
-        const link = linkElement?.href;
-        const imageElement = item.querySelector('.pdp-image img');
-        const image = imageElement?.src;
+        const link = titleElement ? titleElement.href : '';
+
+        const priceElement = item.querySelector('.new-price.plp-srp-new-price-cont .amount');
+        const price = priceElement ? priceElement.innerText.replace('₹', '').replace(',', '').trim() : '';
+
+        const imgElement = item.querySelector('div[data-testid="product-img"] img');
+        const image = imgElement ? imgElement.src : '';
 
         return { title, price, link, image, platform: 'Croma' };
       }).filter(item => item.title && item.price && item.link && item.image);
@@ -86,12 +88,33 @@ const scrapeCroma = async (searchTerm) => {
   }
 };
 
+const scrapeReliance = async (searchTerm) => {
+  const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(`https://www.reliancedigital.in/search?q=${searchTerm}`, { waitUntil: 'networkidle2' });
+
+  const products = await page.evaluate(() => {
+    const items = Array.from(document.querySelectorAll('.sp.grid a'));
+    return items.map(item => {
+      const title = item.querySelector('p.sp__name')?.innerText;
+      const price = item.querySelector('span.TextWeb__Text-sc-1cyx778-0.gimCrs span:last-child')?.innerText.replace('₹', '').trim();
+      const link = item.href;
+      const image = item.querySelector('img.img-responsive')?.src;
+      return { title, price, link, image, platform: 'Reliance Digital'};
+    }).filter(item => item.title && item.price && item.link && item.image);
+  });
+
+  await browser.close();
+  return products;
+};
+
+
 const scrapeProducts = async (searchTerm) => {
   const amazonProducts = await scrapeAmazon(searchTerm);
   const flipkartProducts = await scrapeFlipkart(searchTerm);
   const cromaProducts = await scrapeCroma(searchTerm);
-
-  const combinedProducts = [...amazonProducts, ...flipkartProducts, ...cromaProducts];
+  const relianceProducts = await scrapeReliance(searchTerm);
+  const combinedProducts = [...amazonProducts, ...flipkartProducts, ...cromaProducts, ...relianceProducts];
   return combinedProducts;
 };
 
