@@ -11,11 +11,12 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.get('/scrape', async (req, res) => {
-  const searchTerm = req.query.search;
+  const searchTerm = (req.query.search).replaceAll(' ','+');
   if (!searchTerm) {
     return res.status(400).send('Search term is required');
   }
   try {
+    console.log(searchTerm);
     const data = await scrapeAll(searchTerm);
     res.json(data);
   } catch (error) {
