@@ -8,6 +8,7 @@ Project Overview
 The goal of this project is to create a unified platform for comparing and displaying products from multiple e-commerce websites, specifically Amazon, Flipkart, Reliance Digital and Vijay Sales. The platform aims to enhance the shopping experience by consolidating product information from different sources, allowing users to see all available options for a particular product in one place.
 
 Key Features
+![Screenshot 2024-07-28 at 19-38-28 BargainBot](https://github.com/user-attachments/assets/5520d080-e68a-4f36-bc63-c8022f835bd3)
 
 Web Scraping
 
@@ -20,6 +21,8 @@ Products from different websites are aggregated and displayed under a single tit
 User Interface 
 
  A React-based frontend allows users to search for products and view the aggregated results. Each product is displayed with links to its respective pages on the different e-commerce websites, along with their prices.
+ 
+![Screenshot 2024-07-28 at 19-37-07 BargainBot](https://github.com/user-attachments/assets/4d52294f-6eb1-438b-bf52-b86c89fee298)
 
 Technical Components
 
