@@ -96,10 +96,14 @@ const scrapeReliance = async (searchTerm) => {
   const products = await page.evaluate(() => {
     const items = Array.from(document.querySelectorAll('.sp.grid a'));
     return items.map(item => {
-      const title = item.querySelector('p.sp__name')?.innerText;
-      const price = item.querySelector('span.TextWeb__Text-sc-1cyx778-0.gimCrs span:last-child')?.innerText.replace('₹', '').trim();
+      const titleElement = item.querySelector('p.sp__name');
+      const title = titleElement ? titleElement.title : null;
       const link = item.href;
-      const image = item.querySelector('img.img-responsive')?.src;
+      const imgElement = item.querySelector('img.img-responsive.imgCenter');
+      const image = imgElement ? imgElement.src : null;
+
+      const priceElement = item.querySelector('.span.TextWeb__Text-sc-1cyx778-0.gimCrs span:last-child');
+      const price = priceElement ? priceElement.innerText.replace('₹', '').replace(',', '').trim() : null;
       return { title, price, link, image, platform: 'Reliance Digital'};
     }).filter(item => item.title && item.price && item.link && item.image);
   });
@@ -109,12 +113,39 @@ const scrapeReliance = async (searchTerm) => {
 };
 
 
+const scrapeVijaySales = async (searchTerm) => {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.goto(`https://www.vijaysales.com/search/${searchTerm}`, { waitUntil: 'networkidle2' });
+
+  const products = await page.evaluate(() => {
+    const items = Array.from(document.querySelectorAll('.BcktPrd'));
+    return items.map(item => {
+      const titleElement = item.querySelector('a[title]');
+      const title = titleElement ? titleElement.title : null;
+      const link = titleElement ? titleElement.href : null;
+
+      const imgElement = item.querySelector('img.prdimg');
+      const image = imgElement ? imgElement.src : null;
+
+      const priceElement = item.querySelector('.Prdvsprc_');
+      const price = priceElement ? priceElement.innerText.replace('₹', '').replace(',', '').trim() : null;
+
+      return { title, price, link, image, platform: 'Vijay Sales' };
+    }).filter(item => item.title && item.price && item.link && item.image);
+  });
+
+  await browser.close();
+  return products;
+};
+
 const scrapeProducts = async (searchTerm) => {
   const amazonProducts = await scrapeAmazon(searchTerm);
   const flipkartProducts = await scrapeFlipkart(searchTerm);
   const cromaProducts = await scrapeCroma(searchTerm);
   const relianceProducts = await scrapeReliance(searchTerm);
-  const combinedProducts = [...amazonProducts, ...flipkartProducts, ...cromaProducts, ...relianceProducts];
+  const vijaysalesProducts = await scrapeVijaySales(searchTerm);
+  const combinedProducts = [...amazonProducts, ...flipkartProducts, ...cromaProducts, ...relianceProducts, ...vijaysalesProducts];
   return combinedProducts;
 };
 

@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Amazon Product Scraper</h1>
+        <h1>Bargain Bot</h1>
       </header>
       <ProductList />
     </div>

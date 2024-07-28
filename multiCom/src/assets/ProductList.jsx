@@ -42,7 +42,7 @@ const ProductList = () => {
       <div className="product-list">
         {Object.keys(groupedProducts).map((title, index) => (
           <div className="product-item" key={index}>
-            <h3>{title}</h3>
+            <h3>{groupedProducts[title][0].title}</h3>
             <div className="product-details">
               {groupedProducts[title].map((product, i) => (
                 <div key={i} className="product">
