@@ -56,62 +56,68 @@ const scrapeFlipkart = async (searchTerm) => {
   }
 };
 
-const scrapeCroma = async (searchTerm) => {
-  try {
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.goto(`https://www.croma.com/searchB?q=${searchTerm}`, { waitUntil: 'networkidle2' });
+// const scrapeCroma = async (searchTerm) => {
+//   try {
+//     const browser = await puppeteer.launch({ headless: true });
+//     const page = await browser.newPage();
+//     await page.goto(`https://www.croma.com/searchB?q=${searchTerm}`, { waitUntil: 'networkidle2' });
 
-    const products = await page.evaluate(() => {
-      const items = Array.from(document.querySelectorAll('li.product-item'));
+//     const products = await page.evaluate(() => {
+//       const items = Array.from(document.querySelectorAll('li.product-item'));
 
-      return items.map(item => {
-        const titleElement = item.querySelector('h3.product-title.plp-prod-title a');
-        const title = titleElement?.innerText.trim();
-        const link = titleElement ? titleElement.href : '';
+//       return items.map(item => {
+//         const titleElement = item.querySelector('h3.product-title.plp-prod-title a');
+//         const title = titleElement?.innerText.trim();
+//         const link = titleElement ? titleElement.href : '';
 
-        const priceElement = item.querySelector('.new-price.plp-srp-new-price-cont .amount');
-        const price = priceElement ? priceElement.innerText.replace('₹', '').replace(',', '').trim() : '';
+//         const priceElement = item.querySelector('.new-price.plp-srp-new-price-cont .amount');
+//         const price = priceElement ? priceElement.innerText.replace('₹', '').replace(',', '').trim() : '';
 
-        const imgElement = item.querySelector('div[data-testid="product-img"] img');
-        const image = imgElement ? imgElement.src : '';
+//         const imgElement = item.querySelector('div[data-testid="product-img"] img');
+//         const image = imgElement ? imgElement.src : '';
 
-        return { title, price, link, image, platform: 'Croma' };
-      }).filter(item => item.title && item.price && item.link && item.image);
-    });
+//         return { title, price, link, image, platform: 'Croma' };
+//       }).filter(item => item.title && item.price && item.link && item.image);
+//     });
 
-    await browser.close();
-    return products;
-  } catch (error) {
-    console.error('Error scraping Croma:', error);
-    return [];
-  }
-};
+//     await browser.close();
+//     return products;
+//   } catch (error) {
+//     console.error('Error scraping Croma:', error);
+//     return [];
+//   }
+// };
+
 
 const scrapeReliance = async (searchTerm) => {
   const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
+  const page = await browser.newPage();
+  
+  try {
     await page.goto(`https://www.reliancedigital.in/search?q=${searchTerm}`, { waitUntil: 'networkidle2' });
 
-  const products = await page.evaluate(() => {
-    const items = Array.from(document.querySelectorAll('.sp.grid a'));
-    return items.map(item => {
-      const titleElement = item.querySelector('p.sp__name');
-      const title = titleElement ? titleElement.title : null;
-      const link = item.href;
-      const imgElement = item.querySelector('img.img-responsive.imgCenter');
-      const image = imgElement ? imgElement.src : null;
+    // Wait for the required elements to load
+    await page.waitForSelector('.sp.grid a', { timeout: 10000 });
 
-      const priceElement = item.querySelector('.span.TextWeb__Text-sc-1cyx778-0.gimCrs span:last-child');
-      const price = priceElement ? priceElement.innerText.replace('₹', '').replace(',', '').trim() : null;
-      return { title, price, link, image, platform: 'Reliance Digital'};
-    }).filter(item => item.title && item.price && item.link && item.image);
-  });
+    const products = await page.evaluate(() => {
+      const items = Array.from(document.querySelectorAll('.sp.grid a'));
+      return items.map(item => {
+        const title = item.querySelector('p.sp__name')?.innerText;
+        const price = item.querySelector('span.TextWeb__Text-sc-1cyx778-0.gimCrs span:last-child')?.innerText.replace('₹', '').trim();
+        const link = item.href;
+        const image = item.querySelector('img.img-responsive.imgCenter')?.src;
+        return { title, price, link, image, platform: 'Reliance Digital' };
+      }).filter(item => item.title && item.price && item.link && item.image);
+    });
 
-  await browser.close();
-  return products;
+    return products;
+  } catch (error) {
+    console.error('Error scraping Reliance Digital:', error);
+    return [];
+  } finally {
+    await browser.close();
+  }
 };
-
 
 const scrapeVijaySales = async (searchTerm) => {
   const browser = await puppeteer.launch({ headless: true });
@@ -142,10 +148,10 @@ const scrapeVijaySales = async (searchTerm) => {
 const scrapeProducts = async (searchTerm) => {
   const amazonProducts = await scrapeAmazon(searchTerm);
   const flipkartProducts = await scrapeFlipkart(searchTerm);
-  const cromaProducts = await scrapeCroma(searchTerm);
+  // const cromaProducts = await scrapeCroma(searchTerm);
   const relianceProducts = await scrapeReliance(searchTerm);
   const vijaysalesProducts = await scrapeVijaySales(searchTerm);
-  const combinedProducts = [...amazonProducts, ...flipkartProducts, ...cromaProducts, ...relianceProducts, ...vijaysalesProducts];
+  const combinedProducts = [...amazonProducts, ...flipkartProducts, ...relianceProducts, ...vijaysalesProducts];
   return combinedProducts;
 };
 
