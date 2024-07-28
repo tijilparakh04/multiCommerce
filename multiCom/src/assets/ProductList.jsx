@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './ProductList.css';
+import Loader from './Loader.jsx'; 
 
 const ProductList = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,7 +13,7 @@ const ProductList = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get(`http://localhost:3000/api/products?searchTerm=${searchTerm}`);
+      const response = await axios.get(`http://localhost:3000/scrape?search=${searchTerm}`);
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -21,38 +22,28 @@ const ProductList = () => {
     setLoading(false);
   };
 
-  const groupedProducts = products.reduce((acc, product) => {
-    const title = product.title.toLowerCase();
-    if (!acc[title]) acc[title] = [];
-    acc[title].push(product);
-    return acc;
-  }, {});
-
   return (
-    <div>
-      <input
+    <div class="searchbutton">
+      <input class="inputsearch"
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search for a product"
       />
-      <button onClick={handleSearch}>Search</button>
-      {loading && <p>Loading...</p>}
+      <button class="button-64" onClick={handleSearch}>Search</button>
+      {loading && <Loader />}
       {error && <p>{error}</p>}
       <div className="product-list">
-        {Object.keys(groupedProducts).map((title, index) => (
+        {products.map((product, index) => (
           <div className="product-item" key={index}>
-            <h3>{groupedProducts[title][0].title}</h3>
-            <div className="product-details">
-              {groupedProducts[title].map((product, i) => (
-                <div key={i} className="product">
-                  <a href={product.link} target="_blank" rel="noopener noreferrer">
-                    <img src={product.image} alt={product.title} />
-                    <p>{product.platform}: ₹{product.price}</p>
-                  </a>
-                </div>
-              ))}
-            </div>
+            <a href={product.link} target="_blank" rel="noopener noreferrer">
+              <img src={product.image} />
+              <div class = "product-items">
+                <p class = "titles">{product.title}</p>
+                <p>₹{product.price}</p>
+                <p>Site: {product.platform}</p>
+              </div>
+            </a>
           </div>
         ))}
       </div>
