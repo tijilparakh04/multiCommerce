@@ -1,5 +1,5 @@
 # multiCommerce
-BarGain Bot
+**BarGain Bot**
 
 Project Overview
 ![Screenshot 2024-07-28 at 19-36-57 BargainBot](https://github.com/user-attachments/assets/1c0f0a41-db96-4c51-8bd1-58674961a09a)
