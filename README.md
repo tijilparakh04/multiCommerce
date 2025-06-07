@@ -44,7 +44,7 @@ Search Functionality: Allows users to input a search term to find products.
 
 Detailed Description
 
-Web Scraping
+Web Scraping - electronic gadgets sites
 
 Amazon: The scraper navigates to the search results page on Amazon and extracts the product title, price, URL, and image.
 
@@ -52,7 +52,7 @@ Flipkart: Similarly, the scraper collects product data from Flipkart.
 
 Vijay Sales: The scraper gathers product information from Vijay Sales.
 
-Data Aggregation
+Data Aggregation 
 
 - Products are grouped based on their titles to ensure that identical products are displayed together.
 
@@ -66,7 +66,7 @@ User Interface
 
 - Each product shows the platform name (Amazon, Flipkart, Vijay Sales) and the respective price.
 
-Example Workflow
+Example Workflow -
 
 1. User Search: A user searches for "iPhone 15 128GB".
 
@@ -76,7 +76,7 @@ Example Workflow
 
 4. Frontend Display: The frontend displays the grouped products, with each group containing links to Amazon, Flipkart, and Vijay Sales along with their prices.
 
-Challenges and Solutions
+Challenges and Solutions -
 
 - Inconsistent Data: Different websites might have slightly different titles for the same product. The aggregation logic should handle such inconsistencies.
 
@@ -84,7 +84,7 @@ Challenges and Solutions
 
 - Error Handling: Robust error handling is essential to manage network issues, changes in website structure, and other potential problems during scraping.
 
-Future Enhancements
+Future Enhancements -
 
 - Additional Websites: Expand the platform to include more e-commerce websites.
 
@@ -92,4 +92,4 @@ Future Enhancements
 
 - User Accounts: Allow users to save their favorite products and receive personalized recommendations.
 
-This project aims to simplify online shopping by providing a one-stop solution for product comparison, making it easier for users to find the best deals across multiple e-commerce platforms
+This project aims to simplify online shopping by providing a one-stop solution for product comparison, making it easier for users to find the best deals across multiple e-commerce platforms.
