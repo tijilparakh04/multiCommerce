@@ -10,7 +10,7 @@ The goal of this project is to create a unified platform for comparing and displ
 Key Features
 ![Screenshot 2024-07-28 at 19-38-28 BargainBot](https://github.com/user-attachments/assets/5520d080-e68a-4f36-bc63-c8022f835bd3)
 
-Web Scraping
+Web Scraping:
 
 The platform uses Puppeteer, a Node.js library, to scrape product data from Amazon, Flipkart, and Vijay Sales. The data includes product URLs, titles, prices, and images.
 
